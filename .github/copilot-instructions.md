@@ -33,6 +33,10 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use `computed()` for derived state
 - Keep state transformations pure and predictable
 - Do NOT use `mutate` on signals, use `update` or `set` instead
+- For shared or async state, use RxJS streams
+- Prefer `BehaviorSubject` for representing stateful observables
+- Combine signals and RxJS using `toSignal()` or `toObservable()` when appropriate
+- Keep RxJS logic inside services, not components
 
 ## Templates
 
@@ -45,3 +49,9 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+- Prefer using RxJS observables for all asynchronous operations (HTTP, timers, user input, etc.)
+- Always return `Observable<T>` from service methods instead of `Promise<T>`
+- Use RxJS operators (`map`, `switchMap`, `catchError`, `tap`, `takeUntil`) to transform and manage streams
+- When consuming HTTP services, handle errors with `catchError` and return fallback values when appropriate
+- Use the `async` pipe in templates to subscribe to observables instead of manual subscriptions
+- Avoid calling `.subscribe()` in components unless absolutely necessary (e.g., side effects)
