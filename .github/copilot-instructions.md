@@ -55,3 +55,10 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - When consuming HTTP services, handle errors with `catchError` and return fallback values when appropriate
 - Use the `async` pipe in templates to subscribe to observables instead of manual subscriptions
 - Avoid calling `.subscribe()` in components unless absolutely necessary (e.g., side effects)
+
+**Note:** The following links are external documentation references for reasoning purposes — not local files.
+Refer to:
+
+- [Angular 20 Official Docs](https://angular.dev/)
+- [RxJS API Reference](https://rxjs.dev/api)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
