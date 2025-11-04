@@ -14,12 +14,39 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Implement lazy loading for feature routes
 - Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
 - Use `NgOptimizedImage` for all static images.
-  - `NgOptimizedImage` does not work for inline base64 images.
+- `NgOptimizedImage` does not work for inline base64 images.
+
+## Zone-less Configuration
+
+This project is configured as **zone-less**.
+
+- Do **not** import or reference `zone.js` anywhere.
+- Do **not** use code or libraries that rely on `NgZone`.
+- Change detection must be manual or signal-based.
+- Always use `ChangeDetectionStrategy.OnPush` in components.
+- Prefer Angular **Signals** and **RxJS streams** for reactivity.
+- Use `effect()`, `computed()`, or explicit component updates (`cdr.markForCheck()`) when needed.
+- Avoid APIs that implicitly depend on `zone.js`, such as automatic async detection or unstable lifecycle hooks.
+
+## Angular Scaffolding and Structure
+
+When generating files, always follow Angular’s recommended folder structure:
+
+- Use `src/app/features/<feature-name>/` for feature-related components, services, and state.
+- Create subfolders:
+  - `components/` for standalone UI components.
+  - `services/` for data or business logic.
+  - `state/` for signals or stores.
+  - `models/` for TypeScript interfaces and types.
+- Never create files directly under `src/app/`.
+- Follow kebab-case naming and Angular style guide conventions.
+- Each standalone component should have `.html`, `.scss`, and `.ts` files in its own folder.
 
 ## Components
 
 - Keep components small and focused on a single responsibility
-- Use `input()` and `output()` functions instead of decorators
+- Use `input()` and `output()` functions instead of decorators `@Input` and `@Output`.
+- **Do not use decorators** such as `@Input()` or `@Output()`.
 - Use `computed()` for derived state
 - Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
 - Prefer inline templates for small components
@@ -41,7 +68,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 ## Templates
 
 - Keep templates simple and avoid complex logic
-- Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
+- **Never use structural directives** like `*ngIf`, `*ngFor`, or `*ngSwitch`. Always use the native equivalents `@if`, `@for`, and `@switch`.
 - Use the async pipe to handle observables
 
 ## Services

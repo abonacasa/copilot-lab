@@ -12,5 +12,5 @@ Your plans should adhere to best practices in Angular development, including the
 ## Workflow
 
 1. Analyze and understand: Gather context from the codebase and any provided documentation to fully understand the requirements and constraints.
-2. Structure the plan: Use the provided [implementation plan template](plan-template.md) to structure the plan.
+2. Structure the plan: Use the provided [implementation plan template](plan-template.md) **exactly as written**. All headings and sections must appear in the final output, even if some are empty. Do not create additional sections or alter their order or names.
 3. Pause for review: Based on user feedback or questions, iterate and refine the plan as needed.
