@@ -1,3 +1,4 @@
+These global rules override chat mode-specific behavior. All agents must adhere to these conventions unless explicitly instructed otherwise.
 You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
 
 ## TypeScript Best Practices
@@ -15,32 +16,49 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
 - Use `NgOptimizedImage` for all static images.
 - `NgOptimizedImage` does not work for inline base64 images.
+- Using meaningful names for components, services, and other entities
 
 ## Zone-less Configuration
 
 This project is configured as **zone-less**.
+
+### General Rules
 
 - Do **not** import or reference `zone.js` anywhere.
 - Do **not** use code or libraries that rely on `NgZone`.
 - Change detection must be manual or signal-based.
 - Always use `ChangeDetectionStrategy.OnPush` in components.
 - Prefer Angular **Signals** and **RxJS streams** for reactivity.
+- Do not use `fakeAsync`, `tick`, or `whenStable`.
 - Use `effect()`, `computed()`, or explicit component updates (`cdr.markForCheck()`) when needed.
+
+### Testing Rules
+
+- Always use `provideExperimentalZonelessChangeDetection()` in TestBed setups.
+- Trigger manual change detection via `fixture.detectChanges()`.
 - Avoid APIs that implicitly depend on `zone.js`, such as automatic async detection or unstable lifecycle hooks.
 
 ## Angular Scaffolding and Structure
 
-When generating files, always follow Angular’s recommended folder structure:
+When generating files, always follow Angular’s recommended folder structure to ensure a scalable, consistent and robust application. Organize the src/app directory using vertical slicing around features and shared services:
 
-- Use `src/app/features/<feature-name>/` for feature-related components, services, and state.
-- Create subfolders:
-  - `components/` for standalone UI components.
-  - `services/` for data or business logic.
-  - `state/` for signals or stores.
-  - `models/` for TypeScript interfaces and types.
-- Never create files directly under `src/app/`.
-- Follow kebab-case naming and Angular style guide conventions.
-- Each standalone component should have `.html`, `.scss`, and `.ts` files in its own folder.
+- features/ – Contains feature‑specific standalone components, pages, services and signals. Each feature has its own folder named after the domain (for example, complaints/), with sub‑folders for components/, pages/, services/, state/ and routes.ts. Keep each feature self‑contained and lazy‑loadable.
+
+- core/ – Global singletons and cross‑cutting concerns such as authentication, logging or HTTP interceptors. Services here are provided at root and do not depend on features. Avoid placing any UI components in core.
+
+- shared/ – Reusable UI components, pipes, directives and utilities that can be imported by multiple features. Shared components should be standalone and not depend on other features.
+
+- state/ – Optional layer to organise global or feature‑specific state management. Use Angular signals and computed() for local state and RxJS for shared/async state. Consider colocating state folders inside features when the state is feature‑specific.
+
+- models/ – Define TypeScript interfaces and types used across the app (for example, domain models). Keep models decoupled from services to prevent circular dependencies.
+
+- environments/ – Separate environment configuration files for production and development (for example, environment.ts and environment.prod.ts). Do not store sensitive secrets here; use environment variables via build tooling.
+
+### Additional guidelines:
+
+- Use standalone components exclusively; avoid NgModules. Each component belongs to a feature or shared folder.
+- Place routing configuration (routes.ts) inside each feature folder and import it in the app’s top‑level route definitions.
+- Adopt clear naming conventions (kebab‑case for folders and files) and co‑locate files that change together.
 
 ## Components
 
@@ -53,6 +71,8 @@ When generating files, always follow Angular’s recommended folder structure:
 - Prefer Reactive forms instead of Template-driven ones
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
+- Use `readonly` for properties that shouldn't change
+- Use `protected` on class members that are only used by a component's template
 
 ## State Management
 
@@ -82,10 +102,3 @@ When generating files, always follow Angular’s recommended folder structure:
 - When consuming HTTP services, handle errors with `catchError` and return fallback values when appropriate
 - Use the `async` pipe in templates to subscribe to observables instead of manual subscriptions
 - Avoid calling `.subscribe()` in components unless absolutely necessary (e.g., side effects)
-
-<!-- **Note:** The following links are external documentation references for reasoning purposes — not local files.
-Refer to:
-
-- [Angular 20 Official Docs](https://angular.dev/)
-- [RxJS API Reference](https://rxjs.dev/api)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/) -->
