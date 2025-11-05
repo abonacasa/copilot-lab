@@ -34,7 +34,7 @@ This project is configured as **zone-less**.
 
 ### Testing Rules
 
-- Always use `provideExperimentalZonelessChangeDetection()` in TestBed setups.
+- Always use `provideZonelessChangeDetection()` in TestBed setups.
 - Trigger manual change detection via `fixture.detectChanges()`.
 - Avoid APIs that implicitly depend on `zone.js`, such as automatic async detection or unstable lifecycle hooks.
 

@@ -1,3 +1,29 @@
+# AGENTS.md
+
+## planning
+- **Purpose:** Analyze requirements and generate implementation plans.
+- **Chat mode:** `.github/chatmodes/planning.chatmode.md`
+- **Template:** `.github/templates/plan-template.md`
+
+## implement
+- **Purpose:** Execute plans into working, tested code following TDD.
+- **Chat mode:** `.github/chatmodes/coding.chatmode.md`
+- **Note:** Must not create architecture or tests unless explicitly requested.
+
+## reviewer
+- **Purpose:** Review code quality, structure, and adherence to standards.
+- **Chat mode:** `.github/chatmodes/reviewer.chatmode.md`
+
+## qa
+- **Purpose:** Validate functional correctness and test coverage (unit + integration).
+- **Chat mode:** `.github/chatmodes/qa.chatmode.md`
+
+## docs
+- **Purpose:** Generate and maintain technical and API documentation.
+- **Chat mode:** `.github/chatmodes/docs.chatmode.md`
+
+
+
 <!-- # Agent: UX & Accessibility
 
 You are a specialized assistant focused on improving the User Experience (UX), Accessibility (a11y), and Internationalization (i18n) of Angular applications.

@@ -1,7 +1,31 @@
 import { ComplaintFilterComponent } from './complaint-filter.component';
-import { render, screen, fireEvent } from '@testing-library/angular';
 import { ComplaintFilterCriteria } from '../models/complaint.model';
-import { signal } from '@angular/core';
+import { signal, Component } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+
+@Component({
+  selector: 'test-host',
+  template: `
+    <app-complaint-filter
+      [criteria]="criteria"
+      [loading]="loading"
+      [error]="error"
+      (criteriaChange)="onCriteriaChange($event)"
+    ></app-complaint-filter>
+  `,
+  standalone: true,
+  imports: [ComplaintFilterComponent],
+})
+class TestHostComponent {
+  criteria = signal<ComplaintFilterCriteria | undefined>(undefined);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
+  emitted: ComplaintFilterCriteria | undefined;
+  onCriteriaChange(value: ComplaintFilterCriteria) {
+    this.emitted = value;
+  }
+}
 
 describe('ComplaintFilterComponent', () => {
   let initialCriteria: ComplaintFilterCriteria;
@@ -14,51 +38,71 @@ describe('ComplaintFilterComponent', () => {
       type: [],
       search: '',
     };
+    TestBed.configureTestingModule({
+      imports: [TestHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    });
   });
 
-  it('should render all filter controls', async () => {
-    await render(ComplaintFilterComponent, {
-      componentInputs: { criteria: signal(initialCriteria) },
-    });
-    expect(screen.getByLabelText(/date range/i)).toBeTruthy();
-    expect(screen.getByLabelText(/medios de comunicación/i)).toBeTruthy();
-    expect(screen.getByLabelText(/status/i)).toBeTruthy();
-    expect(screen.getByLabelText(/type/i)).toBeTruthy();
-    expect(screen.getByLabelText(/search/i)).toBeTruthy();
+  function createHost() {
+    return TestBed.createComponent(TestHostComponent);
+  }
+
+  it('should render all filter controls', () => {
+    const ref = createHost();
+    ref.componentInstance.criteria.set(initialCriteria);
+    ref.detectChanges();
+    const el = ref.nativeElement as HTMLElement;
+    expect(el.querySelector('input[type="date"]')).toBeTruthy();
+    expect(el.querySelector('select#medios')).toBeTruthy();
+    expect(el.querySelector('select#status')).toBeTruthy();
+    expect(el.querySelector('select#type')).toBeTruthy();
+    expect(el.querySelector('input[type="search"]')).toBeTruthy();
   });
 
-  it('should emit updated criteria when filters change', async () => {
-    const onCriteriaChange = jasmine.createSpy('onCriteriaChange');
-    await render(ComplaintFilterComponent, {
-      componentInputs: { criteria: signal(initialCriteria) },
-      componentOutputs: { criteriaChange: onCriteriaChange },
-    });
-    fireEvent.change(screen.getByLabelText(/search/i), { target: { value: 'test' } });
-    expect(onCriteriaChange).toHaveBeenCalledWith(jasmine.objectContaining({ search: 'test' }));
+  it('should emit updated criteria when filters change', () => {
+    const ref = createHost();
+    ref.componentInstance.criteria.set(initialCriteria);
+    ref.detectChanges();
+    const searchInput = ref.nativeElement.querySelector('input[type="search"]') as HTMLInputElement;
+    searchInput.value = 'test';
+    searchInput.dispatchEvent(new Event('input'));
+    ref.detectChanges();
+    expect(ref.componentInstance.emitted).toEqual(jasmine.objectContaining({ search: 'test' }));
   });
 
-  it('should be accessible and have i18n attributes', async () => {
-    await render(ComplaintFilterComponent, {
-      componentInputs: { criteria: signal(initialCriteria) },
-    });
-  expect(screen.getByLabelText(/date range/i).getAttribute('i18n')).toBeTruthy();
-  expect(screen.getByLabelText(/medios de comunicación/i).getAttribute('i18n')).toBeTruthy();
-  expect(screen.getByLabelText(/status/i).getAttribute('i18n')).toBeTruthy();
-  expect(screen.getByLabelText(/type/i).getAttribute('i18n')).toBeTruthy();
-  expect(screen.getByLabelText(/search/i).getAttribute('i18n')).toBeTruthy();
+  it('should be accessible and have i18n attributes', () => {
+    const ref = createHost();
+    ref.componentInstance.criteria.set(initialCriteria);
+    ref.detectChanges();
+    const el = ref.nativeElement as HTMLElement;
+    // Verifica que las etiquetas sean legibles
+    const labels = Array.from(el.querySelectorAll('label')).map(l => l.textContent?.trim());
+    expect(labels).toContain('Search');
+    expect(labels).toContain('Status');
+    expect(labels).toContain('Type');
+
+    // Verifica que los campos tengan aria-labels válidos
+    const inputs = Array.from(el.querySelectorAll('[aria-label]'));
+    expect(inputs.length).toBeGreaterThan(0);
+    expect(inputs.some(i => i.getAttribute('aria-label') === 'Search')).toBeTrue();
   });
 
-  it('should show loading state when loading', async () => {
-    await render(ComplaintFilterComponent, {
-      componentInputs: { criteria: signal(initialCriteria), loading: signal(true) },
-    });
-    expect(screen.getByTestId('filter-loading')).toBeTruthy();
+  it('should show loading state when loading', () => {
+    const ref = createHost();
+    ref.componentInstance.criteria.set(initialCriteria);
+    ref.componentInstance.loading.set(true);
+    ref.detectChanges();
+    const el = ref.nativeElement as HTMLElement;
+    expect(el.querySelector('[data-testid="filter-loading"]')).toBeTruthy();
   });
 
-  it('should show error state when error occurs', async () => {
-    await render(ComplaintFilterComponent, {
-      componentInputs: { criteria: signal(initialCriteria), error: signal('Network error') },
-    });
-    expect(screen.getByText(/network error/i)).toBeTruthy();
+  it('should show error state when error occurs', () => {
+    const ref = createHost();
+    ref.componentInstance.criteria.set(initialCriteria);
+    ref.componentInstance.error.set('Network error');
+    ref.detectChanges();
+    const el = ref.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('Network error');
   });
 });

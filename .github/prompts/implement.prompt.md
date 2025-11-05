@@ -14,15 +14,15 @@ Follow this workflow:
 4. Implement a single task or step from an existing implementation plan.
 5. Implement the minimal code required to make the tests pass.
 6. Refactor as needed while keeping all tests green.
-7. Generate complete Angular files, including components, services, and templates, using standalone APIs and signals.
+<!-- 7. Generate complete Angular files, including components, services, and templates, using standalone APIs and signals. -->
 
 **Instructions:**
 
 - Use the project standards from [copilot-instructions.md](../copilot-instructions.md)
-- Ensure accessibility and i18n compliance.
+<!-- - Ensure accessibility and i18n compliance.
 - Use the TDD loop: `Write test → Implement → Verify → Refactor`.
 - Adhere strictly to the architecture described in the plan.
-- Use the naming and patterns defined in the project’s standards.
+- Use the naming and patterns defined in the project’s standards. -->
 
 Now, implement the feature described in the plan below.
 
